@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+        <input type="hidden" id="menuid" name="menuid">
+        <label class="layui-form-label required">名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" id="name" lay-verify="required" lay-reqtext="菜单名称不能为空" placeholder="请输入菜单名称" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">target</label>
+        <div class="layui-input-block">
+            <input type="text" name="target" id="target" placeholder="请输入菜单target" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">URL</label>
+        <div class="layui-input-block">
+            <input type="text" name="menuurl" id="menuurl" placeholder="请输入菜单URL" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">菜单按钮</label>
+        <div class="layui-input-block">
+            <input type="radio" name="nodetype" value="1" title="菜单" checked="">
+            <input type="radio" name="nodetype" value="2" title="按钮">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">是否显示</label>
+        <div class="layui-input-block">
+            <input type="radio" name="isshow" value="0" title="显示" checked="">
+            <input type="radio" name="isshow" value="1" title="不显示">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">父级菜单</label>
+        <div class="layui-input-block">
+<!--            <select name="pmenuid" id="pmenuid" lay-verify="">-->
+
+<!--            </select>-->
+            <input type="text" id="pmenuid" name="pmenuid" lay-filter="pmenuid" class="layui-input">
+
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.config({
+        base: "/lib/layui-v2.5.5/lay/modules/"
+    }).extend({
+        treeSelect: "treeSelect"
+    });
+    layui.use(['form','treeSelect'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$,
+            treeSelect = layui.treeSelect;
+
+        console.log($('#menuid').val());
+
+        var menuid = $('#menuid').val();
+        // var parentMenus = [];
+
+        // $.ajax({
+        //     type :'post',
+        //     cache: false,
+        //     async: false,
+        //     data:{"menuid":menuid},
+        //     url :'/menu/getParentMenuIdAndName',
+        //     dataType :'json',
+        //     success : function(result) {
+        //         if(result.code==0){
+        //             parentMenus = result.parentMenus;
+        //         }else{
+        //             layer.msg(result.msg);
+        //         }
+        //     }
+        // });
+        let menu;
+        $.ajax({
+            type :'post',
+            cache: false,
+            async: false,
+            data:{"menuid":menuid},
+            url :'/menu/getMenuById',
+            dataType :'json',
+            success : function(result) {
+                if(result.code==0){
+                    if(result.menu!=null){
+                        menu = result.menu;
+                        $("#name").val(menu.name);
+                        $("#target").val(menu.target);
+                        $("#menuurl").val(menu.menuurl);
+                        $("input[name=nodetype][value='1']").attr("checked", menu.nodetype == 1 ? true : false);
+                        $("input[name=nodetype][value='2']").attr("checked", menu.nodetype == 2 ? true : false);
+                        $("input[name=isshow][value='0']").attr("checked", menu.isshow == 0 ? true : false);
+                        $("input[name=isshow][value='1']").attr("checked", menu.isshow == 1 ? true : false);
+                        $('#pmenuid').append(new Option('根目录','0' ));
+                        // $.each(parentMenus, function (index, item) {
+                        //     $('#pmenuid').append(new Option(item.name, item.menuid));// 下拉菜单里添加元素
+                        // })
+                        // $('#pmenuid').find('option').each(function(){
+                        //     console.log($(this).val());
+                        //     $(this).attr('selected',$(this).val()==menu.pmenuid);
+                        // });
+                        form.render();
+                    }else{
+                        layer.msg("该菜单已被删除，请刷新表格");
+                    }
+                }else{
+                    layer.msg(result.msg);
+                }
+            }
+        });
+
+        treeSelect.render({
+            // 选择器
+            elem: '#pmenuid',
+            // 数据
+            data: '/menu/getMenuJsonSelect',
+            // 异步加载方式：get/post，默认get
+            type: 'get',
+            // 占位符
+            placeholder: '修改默认提示信息',
+            // 是否开启搜索功能：true/false，默认false
+            search: true,
+            // 一些可定制的样式
+            style: {
+                folder: {
+                    enable: true
+                },
+                line: {
+                    enable: true
+                }
+            },
+            // 点击回调
+            click: function(d){
+                console.log(d);
+            },
+            // 加载完成后的回调函数
+            success: function (d) {
+                console.log(d);
+//                选中节点，根据id筛选
+                treeSelect.checkNode('pmenuid', menu.pmenuid);
+//                刷新树结构
+                treeSelect.refresh('tree');
+            }
+        });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var index = layer.alert("确认修改吗？", {
+                title: '最终的提交信息'
+            }, function () {
+                $.ajax({
+                    type :'post',
+                    cache: false,
+                    async: false,
+                    data:data.field,
+                    url :'/menu/updateMenu',
+                    dataType :'json',
+                    success : function(result) {
+                        if(result.code==0){
+                            // 关闭弹出层
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        }else{
+                            layer.msg(result.msg);
+                        }
+                    }
+                });
+
+            });
+
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

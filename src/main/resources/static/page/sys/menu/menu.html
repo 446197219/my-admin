@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>menu</title>
+    <link rel="stylesheet" href="../../../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../../../css/public.css" media="all">
+    <style>
+        .layui-btn:not(.layui-btn-lg ):not(.layui-btn-sm):not(.layui-btn-xs) {
+            height: 34px;
+            line-height: 34px;
+            padding: 0 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div>
+            <div class="layui-btn-group">
+                <button class="layui-btn layui-btn-normal" id="btn-add">新增权限</button>
+                <button class="layui-btn" id="btn-expand">全部展开</button>
+                <button class="layui-btn layui-btn-normal" id="btn-fold">全部折叠</button>
+            </div>
+            <table id="munu-table" class="layui-table" lay-filter="munu-table"></table>
+        </div>
+    </div>
+</div>
+<!-- 操作列 -->
+<script type="text/html" id="auth-state">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'treetable'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var treetable = layui.treetable;
+
+        // 渲染表格
+        layer.load(2);
+        treetable.render({
+            treeColIndex: 1,
+            treeSpid: 0,
+            treeIdName: 'menuid',
+            treePidName: 'pmenuid',
+            elem: '#munu-table',
+            url: '/menu/findMenus',
+            page: false,
+            cols: [[
+                {type: 'numbers'},
+                {field: 'name', minWidth: 200, title: '权限名称'},
+                {field: 'target', title: 'target'},
+                {field: 'menuurl', title: 'url'},
+
+                {field: 'seqno', minWidth: 100, align: 'center', title: '排序号'},
+                {
+                    field: 'isshow', width: 80, align: 'center', templet: function (d) {
+                        if (d.nodetype == 1) {
+                            return '<span class="layui-badge layui-bg-blue">菜单</span>';
+                        }
+                        if (d.nodetype == 2) {
+                            return '<span class="layui-badge layui-bg-gray">按钮</span>';
+                        } else {
+                            return '<span class="layui-badge-rim">未知</span>';
+                        }
+                    }, title: '类型'
+                },
+                {
+                    field: 'isshow', width: 80, align: 'center', templet: function (d) {
+                        if (d.isshow == 0) {
+                            return '<span class="layui-badge layui-bg-blue">显示</span>';
+                        }
+                        if (d.isshow == 1) {
+                            return '<span class="layui-badge layui-bg-gray">不显示</span>';
+                        } else {
+                            return '<span class="layui-badge-rim">未知</span>';
+                        }
+                    }, title: '是否显示'
+                },
+                {templet: '#auth-state', width: 120, align: 'center', title: '操作'}
+            ]],
+            done: function () {
+                layer.closeAll('loading');
+            }
+        });
+
+        $('#btn-expand').click(function () {
+            treetable.expandAll('#munu-table');
+        });
+
+        $('#btn-fold').click(function () {
+            treetable.foldAll('#munu-table');
+        });
+
+        $('#btn-add').click(function () {
+            var index = layer.open({
+                title: '新增菜单',
+                type: 2,
+                shade: 0.2,
+                maxmin:true,
+                shadeClose: true,
+                area: ['100%', '100%'],
+                content: './add.html',
+                success: function (layero, index) {
+                    //找到它的子窗口的body
+                    //为子窗口元素赋值
+                },
+                end: function () {
+                    console.log('关闭了');
+                    console.log(treetable);
+                    // 刷新树结构
+                    self.location.reload();
+                }
+            });
+        });
+
+        //监听工具条
+        table.on('tool(munu-table)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+
+            if (layEvent === 'del') {
+                layer.confirm('确认删除'+data.name+'吗？',function () {
+                    $.ajax({
+                        type :'post',
+                        cache: false,
+                        async: false,
+                        data: {'menuid':data.id},
+                        url :'/menu/deleteMenuById',
+                        dataType :'json',
+                        success : function(result) {
+                            layer.msg(result.msg);
+                            self.location.reload();
+                        }
+                    });
+                })
+
+            } else if (layEvent === 'edit') {
+                layer.msg('修改' + data.id);
+                var index = layer.open({
+                    title: '编辑菜单',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: './edit.html',
+                    success: function (layero, index) {
+                        //找到它的子窗口的body
+                        var body = layer.getChildFrame('body', index);
+                        //为子窗口元素赋值
+                        body.contents().find("#menuid").val(data.menuid);
+                    },
+                    end: function () {
+                        console.log('关闭了');
+                        console.log(treetable);
+                        // 刷新树结构
+                        self.location.reload();
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

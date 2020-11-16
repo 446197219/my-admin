@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yeyu.dao.ext.MenuExtMapper" >
+  <resultMap id="BaseResultMap" type="com.yeyu.pojo.Menu" >
+    <id column="menuId" property="menuid" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="pMenuId" property="pmenuid" jdbcType="INTEGER" />
+    <result column="planType" property="plantype" jdbcType="VARCHAR" />
+    <result column="nodeType" property="nodetype" jdbcType="VARCHAR" />
+    <result column="menuUrl" property="menuurl" jdbcType="VARCHAR" />
+    <result column="target" property="target" jdbcType="VARCHAR" />
+    <result column="picUrl" property="picurl" jdbcType="VARCHAR" />
+    <result column="seqNo" property="seqno" jdbcType="INTEGER" />
+    <result column="isshow" property="isshow" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    menuId, name, pMenuId, planType, nodeType, menuUrl, target, picUrl, seqNo, isshow
+  </sql>
+
+  <select id="findMenus" resultMap="BaseResultMap" parameterType="com.yeyu.pojo.Menu">
+    select
+    <include refid="Base_Column_List" />
+    from t_sys_menu
+    <where>
+      <if test="isshow !=null and isshow!=''">
+        and isshow = #{ isshow}
+      </if>
+    </where>
+    order by seqNo
+  </select>
+
+  <select id="getParentMenuIdAndName" resultType="map">
+    select
+     menuid,name
+    from t_sys_menu
+    <where>
+      pMenuId = 0
+      <if test="isshow !=null and isshow!=''">
+        and isshow = #{ isshow}
+      </if>
+    </where>
+    order by seqNo
+  </select>
+
+  <select id="getMenusByRoleId" resultMap="BaseResultMap">
+    SELECT
+        <include refid="Base_Column_List" />
+    FROM
+        t_sys_menu
+    WHERE
+        menuId IN
+    (SELECT menuid FROM t_sys_rolemenu)
+    order by seqNo
+  </select>
+</mapper>
