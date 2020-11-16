@@ -61,7 +61,6 @@ public class ShiroServiceImpl implements ShiroService {
                 filterChainDefinitionMap.put( e.get("menuUrl").toString().substring(0,1).equals("/")?e.get("menuUrl").toString():"/"+e.get("menuUrl").toString(),zqRoles.toString() );
             });
         }
-        System.out.println(filterChainDefinitionMap.toString());
         // ⑤ 认证登录  【注：map不能存放相同key】
         filterChainDefinitionMap.put("/**", "authc");
         return filterChainDefinitionMap;
@@ -94,7 +93,7 @@ public class ShiroServiceImpl implements ShiroService {
                     String chainDefinition = entry.getValue().trim().replace(" ", "");
                     manager.createChain(url, chainDefinition);
                 }
-                System.out.println("更新权限成功");
+                log.info("更新权限成功");
             } catch (Exception e) {
                 throw new RuntimeException("更新shiro权限出现错误!");
             }

@@ -40,7 +40,6 @@ public class RoleController {
     @ResponseBody
     @RequestMapping("getAllRolesPage")
     public R getAllRolesPage(Role role,Page page){
-        System.out.println(page.toString());
         roleService.getAllRolesPage(role,page);
         return R.ok().put("page",page);
     }
@@ -70,7 +69,6 @@ public class RoleController {
     @ResponseBody
     @RequestMapping("saveRole")
     public R saveRole(Role role){
-        System.out.println(role.toString());
         int count = roleService.saveRole(role);
         if(count>0){
             return R.ok();

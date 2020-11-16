@@ -80,7 +80,6 @@ public class UserController {
     @ResponseBody
     @RequestMapping("getAllUsers")
     public R getAllUsers(User user, Page page){
-        System.out.println(page.toString());
         userService.getAllUsers(user,page);
         return R.ok().put("page",page);
     }

@@ -1,5 +1,6 @@
 package com.yeyu.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -20,13 +21,14 @@ import java.util.Map;
  * @author: ganzj
  * @create: 2020-09-27 22:21
  */
+@Slf4j
 public class MessageKit {
 
     public static Map<String,String> req2Map(HttpServletRequest request) throws IOException {
         try {
             String xml = req2Xml(request);
             if(!StringUtils.isEmpty(xml)){
-                System.out.println("xml数据："+xml);
+                log.debug("xml数据：{{}}",xml);
                 Map<String, String> map = new HashMap<>();
                 Document document = DocumentHelper.parseText(xml);
                 Element rootElement = document.getRootElement();

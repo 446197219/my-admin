@@ -28,7 +28,6 @@ public class RequestLogController {
     @ResponseBody
     @RequestMapping("getAllRequestLogPage")
     public R getAllRequestLogPage(Role role, Page page){
-        System.out.println(page.toString());
         requestLogService.getAllRequestLogPage(role,page);
         return R.ok().put("page",page);
     }

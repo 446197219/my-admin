@@ -37,7 +37,6 @@ public class MenuController {
     @RequestMapping("getMenuJson")
     public JSONObject getMenuJson(Menu menu) {
         Object user = SecurityUtils.getSubject().getPrincipal();
-        System.out.println(user.toString());
         JSONObject jsonObject = new JSONObject();
 
         JSONObject homeInfo = new JSONObject();
