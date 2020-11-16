@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <input type="hidden" id="id" name="id" >
+    <div class="layui-form-item">
+        <label class="layui-form-label required">角色名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="rolename" id="rolename" lay-verify="required" lay-reqtext="角色名称不能为空" placeholder="请输入角色名称" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">角色描述</label>
+        <div class="layui-input-block">
+            <textarea placeholder="请输入内容" id="description" class="layui-textarea"></textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+
+        console.log($('#id').val());
+
+        var id = $('#id').val();
+
+
+        $.ajax({
+            type :'post',
+            cache: false,
+            async: false,
+            data:{"id":id},
+            url :'/role/getRoleById',
+            dataType :'json',
+            success : function(result) {
+                if(result.code==0){
+                    if(result.data!=null){
+                        var role = result.data;
+                        $("#rolename").val(role.rolename);
+                        $("#description").val(role.description);
+                        form.render();
+                    }else{
+                        layer.msg("该角色已被删除，请刷新表格");
+                    }
+                }else{
+                    layer.msg(result.msg);
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var index = layer.alert("确认修改吗？", {
+                title: '是否确认'
+            }, function () {
+                var description = $("#description").val();
+                console.log(data.field);
+                data.field.description=description;
+                $.ajax({
+                    type :'post',
+                    cache: false,
+                    async: false,
+                    data:data.field,
+                    url :'/role/updateRoleById',
+                    dataType :'json',
+                    success : function(result) {
+                        if(result.code==0){
+                            // 关闭弹出层
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        }else{
+                            layer.msg(result.msg);
+                        }
+                    }
+                });
+
+            });
+
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

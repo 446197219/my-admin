@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yeyu.dao.ext.RoleExtMapper">
+  <resultMap id="BaseResultMap" type="com.yeyu.pojo.Role">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="rolename" jdbcType="VARCHAR" property="rolename" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="createtime" jdbcType="VARCHAR" property="createtime" />
+    <result column="updatetime" jdbcType="VARCHAR" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, rolename, description, `status`, createtime, updatetime
+  </sql>
+
+  <select id="getCountAllRoles" resultType="int">
+
+    select count(1) from t_sys_role
+    <where>
+      <if test="rolename != null and rolename != ''">
+        and rolename like  concat ('%',#{rolename,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="description != null and description != ''">
+        and description = #{description,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null and status != ''">
+        and `status` = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="createtime != null and createtime != ''">
+        and createtime = #{createtime,jdbcType=VARCHAR}
+      </if>
+      <if test="updatetime != null and updatetime != ''">
+        and updatetime = #{updatetime,jdbcType=VARCHAR}
+      </if>
+
+    </where>
+  </select>
+
+  <select id="getAllRoles" resultMap="BaseResultMap">
+
+    select <include refid="Base_Column_List" />
+    from t_sys_role
+    <where>
+      <if test="rolename != null and rolename != ''">
+        and rolename like  concat ('%',#{rolename,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="description != null and description != ''">
+        and description = #{description,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null and status != ''">
+        and `status` = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="createtime != null and createtime != ''">
+        and createtime = #{createtime,jdbcType=VARCHAR}
+      </if>
+      <if test="updatetime != null and updatetime != ''">
+        and updatetime = #{updatetime,jdbcType=VARCHAR}
+      </if>
+
+    </where>
+  </select>
+
+  <delete id="deleteRoleByIds">
+
+    delete from t_sys_role
+    where
+    id in
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+    #{id}
+  </foreach>
+  </delete>
+</mapper>

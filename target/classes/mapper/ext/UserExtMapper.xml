@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yeyu.dao.ext.UserExtMapper" >
+  <resultMap id="BaseResultMap" type="com.yeyu.pojo.User" >
+    <id column="USERID" property="userid" jdbcType="INTEGER" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="NICKNAME" property="nickname" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="USER_TYPE" property="userType" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="VARCHAR" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="openid" property="openid" jdbcType="VARCHAR" />
+    <result column="unionid" property="unionid" jdbcType="VARCHAR" />
+    <result column="TEL_NO" property="telNo" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="VARCHAR" />
+    <result column="headimgurl" property="headimgurl" jdbcType="VARCHAR" />
+    <result column="BIRTHDAY" property="birthday" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="INTEGER" />
+    <result column="MYINFO" property="myinfo" jdbcType="VARCHAR" />
+    <result column="ROLE_ID" property="roleId" jdbcType="INTEGER" />
+    <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="type1" property="type1" jdbcType="VARCHAR" />
+    <result column="type2" property="type2" jdbcType="VARCHAR" />
+    <result column="type3" property="type3" jdbcType="VARCHAR" />
+    <result column="type4" property="type4" jdbcType="VARCHAR" />
+    <result column="string1" property="string1" jdbcType="VARCHAR" />
+    <result column="string2" property="string2" jdbcType="VARCHAR" />
+    <result column="string3" property="string3" jdbcType="VARCHAR" />
+    <result column="string4" property="string4" jdbcType="VARCHAR" />
+    <result column="string5" property="string5" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    USERID, USERNAME, NICKNAME, PASSWORD, USER_TYPE, STATE, country, province, city,
+    openid, unionid, TEL_NO, EMAIL, CREATE_TIME, headimgurl, BIRTHDAY, SEX, MYINFO, ROLE_ID,
+    ROLE_NAME, ADDRESS, type1, type2, type3, type4, string1, string2, string3, string4,
+    string5
+  </sql>
+
+  <sql id="getUserPage">
+    <where>
+      <if test="userid != null and userid != ''" >
+        and USERID = #{userid}
+      </if>
+      <if test="username != null and username != ''" >
+        and USERNAME like  concat ('%',#{username,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="nickname != null and nickname != ''" >
+        and NICKNAME = #{nickname}
+      </if>
+      <if test="password != null and password != ''" >
+        and PASSWORD = #{password}
+      </if>
+      <if test="userType != null and userType != ''" >
+        and USER_TYPE = #{userType}
+      </if>
+      <if test="state != null and state != ''" >
+        and STATE = #{state}
+      </if>
+      <if test="country != null and country != ''" >
+        and country = #{country}
+      </if>
+      <if test="province != null and province != ''" >
+        and province = #{province}
+      </if>
+      <if test="city != null and city != ''" >
+        and city = #{city}
+      </if>
+      <if test="openid != null and openid != ''" >
+        and openid = #{openid}
+      </if>
+      <if test="unionid != null and unionid != ''" >
+        and unionid = #{unionid}
+      </if>
+      <if test="telNo != null and telNo != ''" >
+        and TEL_NO = #{telNo}
+      </if>
+      <if test="email != null and email != ''" >
+        and EMAIL = #{email}
+      </if>
+      <if test="createTime != null and createTime != ''" >
+        and CREATE_TIME = #{createTime}
+      </if>
+      <if test="headimgurl != null and headimgurl != ''" >
+        and headimgurl = #{headimgurl}
+      </if>
+      <if test="birthday != null and birthday != ''" >
+        and BIRTHDAY = #{birthday}
+      </if>
+      <if test="sex != null and sex != ''" >
+        and SEX = #{sex}
+      </if>
+      <if test="myinfo != null and myinfo != ''" >
+        and MYINFO = #{myinfo}
+      </if>
+      <if test="roleId != null and roleId != ''" >
+        and ROLE_ID = #{roleId}
+      </if>
+      <if test="roleName != null and roleName != ''" >
+        and ROLE_NAME = #{roleName}
+      </if>
+      <if test="address != null and address != ''" >
+        and ADDRESS = #{address}
+      </if>
+      <if test="type1 != null and type1 != ''" >
+        and type1 = #{type1}
+      </if>
+      <if test="type2 != null and type2 != ''" >
+        and type2 = #{type2}
+      </if>
+      <if test="type3 != null and type3 != ''" >
+        and type3 = #{type3}
+      </if>
+      <if test="type4 != null and type4 != ''" >
+        and type4 = #{type4}
+      </if>
+      <if test="string1 != null and string1 != ''" >
+        and string1 = #{string1}
+      </if>
+      <if test="string2 != null and string2 != ''" >
+        and string2 = #{string2}
+      </if>
+      <if test="string3 != null and string3 != ''" >
+        and string3 = #{string3}
+      </if>
+      <if test="string4 != null and string4 != ''" >
+        and string4 = #{string4}
+      </if>
+      <if test="string5 != null and string5 != ''" >
+        and string5 = #{string5}
+      </if>
+    </where>
+  </sql>
+  <select id="login" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from t_sys_user where username = #{username}
+  </select>
+
+  <select id="getUserByOpenid" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_sys_user where openid = #{openid}
+  </select>
+
+  <update id="updateStateByOpenid">
+    update t_sys_user set state = 2
+    where
+    openid = #{openid}
+  </update>
+
+  <select id="getCountAllUsers" parameterType="com.yeyu.pojo.User" resultType="int">
+    select count(1) from t_sys_user
+    <include refid="getUserPage" />
+  </select>
+
+  <select id="getAllUsers" parameterType="com.yeyu.pojo.User" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_sys_user
+    <include refid="getUserPage" />
+  </select>
+
+  <update id="uodateStateUserByIds">
+        update t_sys_user
+        set state = #{state}
+        where userid in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+          #{id}
+        </foreach>
+  </update>
+
+  <delete id="deleteUserByIds">
+    delete from t_sys_user
+    where userid in
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </delete>
+</mapper>

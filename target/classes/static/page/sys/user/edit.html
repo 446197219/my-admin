@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <input type="hidden" id="userid" name="userid" >
+    <div class="layui-form-item">
+        <label class="layui-form-label required">登录账号</label>
+        <div class="layui-input-block">
+            <input type="text" name="username" id="username" lay-verify="required" lay-reqtext="账号不能为空" placeholder="请输入账号" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">用户名</label>
+        <div class="layui-input-block">
+            <input type="text" name="nickname" id="nickname" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">性别</label>
+        <div class="layui-input-block">
+            <input type="radio" name="sex" value="1" title="男">
+            <input type="radio" name="sex" value="2" title="女">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">联系号码</label>
+        <div class="layui-input-block">
+            <input type="tel" name="telNo" id="telNo" lay-verify="required|phone" placeholder="请输入号码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-block">
+            <input type="text" name="email" id="email" placeholder="请输入号码"  lay-verify="email" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">角色</label>
+        <div class="layui-input-inline">
+            <select name="rolede" id="rolede" lay-verify="required">
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+
+
+        var userid = $('#userid').val();
+
+        let user;
+        $.ajax({
+            type :'post',
+            cache: false,
+            async: false,
+            data : {"userid":userid},
+            url :'/user/getUserById',
+            dataType :'json',
+            success : function(result) {
+                if(result.user != null){
+
+                    user = result.user;
+                    $("#username").val(user.username);
+                    $("#nickname").val(user.nickname);
+                    $(":radio[name='sex'][value='" + user.sex + "']").click()
+                    $("#telNo").val(user.telNo);
+                    $("#email").val(user.email);
+
+                }
+            }
+        });
+
+        $.ajax({
+            type :'post',
+            cache: false,
+            async: false,
+            url :'/role/getAllRoles',
+            dataType :'json',
+            success : function(result) {
+                if(result.code==0){
+                    $.each(result.roles, function (index, role) {
+                        if(role.id==user.roleId){
+                            $('#rolede').append(new Option(role.rolename, role.id+'||'+role.rolename,true,true));// 下拉菜单里添加元素
+                        }else{
+                            $('#rolede').append(new Option(role.rolename, role.id+'||'+role.rolename));
+                        }
+                    });
+
+                }
+            }
+        });
+        //重载表单
+        form.render();
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var description = $("#description").val();
+            console.log(data.field);
+            data.field.description=description;
+            console.log(description);
+            var index = layer.alert("确认修改吗？", {
+                title: '最终的提交信息'
+            }, function () {
+                let rolede = data.field.rolede.split('||');
+                data.field.roleId = rolede[0];
+                data.field.roleName = rolede[1];
+                delete data.field.rolede;
+                console.log(data.field);
+                $.ajax({
+                    type :'post',
+                    cache: false,
+                    async: false,
+                    data:data.field,
+                    url :'/user/updateUser',
+                    dataType :'json',
+                    success : function(result) {
+                        if(result.code==0){
+                            // 关闭弹出层
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        }else{
+                            layer.msg(result.msg);
+                        }
+                    }
+                });
+
+            });
+
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

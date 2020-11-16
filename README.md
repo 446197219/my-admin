@@ -1,13 +1,11 @@
 ## 简介<br/> 
 My-Admin一套简单通用的后台管理系统<br/> 
-这套Base Admin是一套简单通用的后台管理系统，主要功能有：权限管理、菜单管理、用户管理，系统设置、接口日志、配置个性菜单等<br/> 
-
+这是一套简单通用的后台管理系统，主要功能有：权限管理、菜单管理、用户管理，系统设置、接口日志、配置个性菜单等<br/> 
+<br/> 项目所有请求均使用AJAX实现，后期便捷改造为前后端分离项目
+<br/>权限级别： 细化为URL接口级权限 通过设置权限可动态分配用户接口权限
 ## 技术栈<br/> 
-前端：layui<br/> 
-java后端：SpringBoot + Mybatis +Apache Shiro + MySql + Layui <br/> 
-
-## 运行效果图<br/> 
-![](https://huanzi-qch.gitee.io/file-server/images/base-admin.png) 
+前端：layui2.5.5<br/> 
+java后端：SpringBoot2.3.4 + Mybatis +Apache Shiro + MySql <br/> 
 
 ## 仓库地址<br/> 
 国外：https://github.com/446197219/my-admin<br/> 
@@ -45,3 +43,5 @@ admin/admin
 首先建好数据表，在resources/mybatis-generator/下修改generatorConfig.xml对应表名以及实体名
 修改mybatisGeneratorinit.properties 数据源 在Maven 视图下 运行 Plugins/mybatis-generator即可
 
+联系方式 新项目 暂未建群
+可添加QQ： 446197219
