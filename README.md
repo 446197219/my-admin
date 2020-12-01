@@ -9,6 +9,7 @@ java后端：SpringBoot2.3.4 + Mybatis +Apache Shiro + MySql <br/>
 
 ##访问地址<br/>
 http://xyoyu.cn<br/>
+游客账号：visitor  密码：123456
 
 ## 仓库地址<br/> 
 国外：https://github.com/446197219/my-admin<br/> 
