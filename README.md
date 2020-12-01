@@ -7,6 +7,9 @@ My-Admin一套简单通用的后台管理系统<br/>
 前端：layui2.5.5  模板：layuimini<br/> 
 java后端：SpringBoot2.3.4 + Mybatis +Apache Shiro + MySql <br/> 
 
+##访问地址<br/>
+http://xyoyu.cn<br/>
+
 ## 仓库地址<br/> 
 国外：https://github.com/446197219/my-admin<br/> 
 国内：gitee.com暂无<br/> 
